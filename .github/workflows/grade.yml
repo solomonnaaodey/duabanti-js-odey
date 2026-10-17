@@ -1,0 +1,53 @@
+name: Check my work
+
+# Runs every time you push. The green tick means the checks for that week pass.
+#
+# This is a self-check, not your mark. A human reads your code too, and the
+# DuabaNti grader runs the same tests on our side. It exists so you find out
+# something is broken on Wednesday instead of after the deadline.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      # No `npm install`. The tests use Node's own test runner, so there is
+      # nothing to download and nothing to go wrong before you have been taught
+      # what a dependency is.
+      - name: Run the checks for the weeks you have submitted
+        run: |
+          shopt -s nullglob
+          any=0
+          for test in tests/week*.test.mjs; do
+            week=$(basename "$test" .test.mjs)      # week02
+            num=${week#week}                        # 02
+            # Only check a week whose file you have actually added.
+            #
+            # This has to be a glob into an array, NOT `ls week${num}-*.js`.
+            # nullglob is on, so an unmatched pattern expands to nothing at all and
+            # `ls` would then run with no arguments — listing the directory and
+            # succeeding — so every week would run on every push, and a student
+            # who has done only week 2 would see weeks they have not reached fail.
+            #
+            # Week 10 is not special-cased either: its file is week10-node.js, so
+            # the same glob finds it once they have written it.
+            files=(week${num}-*.js)
+            if [ ${#files[@]} -gt 0 ]; then
+              echo "::group::$week"
+              node --test "$test" || any=1
+              echo "::endgroup::"
+            else
+              echo "$week — no file yet, skipping"
+            fi
+          done
+          exit $any

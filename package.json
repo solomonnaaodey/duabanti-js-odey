@@ -1,0 +1,10 @@
+{
+  "name": "duabanti-js",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "DuabaNti JavaScript programme — weekly assignments",
+  "scripts": {
+    "check": "echo \"Check one week at a time, e.g.: node --test tests/week02.test.mjs\""
+  }
+}
