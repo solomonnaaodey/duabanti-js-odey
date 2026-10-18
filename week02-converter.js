@@ -5,7 +5,7 @@ const dollar_rate = 0.09;
 
 const miles_rate = 0.621361;
 
-const fahrenheit_rate = (9/5) + 32;
+const fahrenheit_rate = (9/5);
 
 
 // functions
@@ -18,13 +18,12 @@ function kmToMiles(km){
 }
 
 function celsiusToFahrenheit(celsius){
-    return celsius * fahrenheit_rate;
+    return celsius * fahrenheit_rate + 32;
 }
-
 
 const cedi_amount = 2789;
 const km_value = 94;
-const celsius_value = 90
+const celsius_value = 90;
 
 
 console.log(`GHC${cedi_amount.toLocaleString("en-GH")} = $${cedisToDollars(cedi_amount).toFixed(2)}`);
